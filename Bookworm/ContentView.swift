@@ -10,9 +10,13 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @Query(sort:[SortDescriptor(\Book.title),SortDescriptor(\Book.author)]) var books: [Book]
+    @Query(sort: [SortDescriptor(\Book.title)]) var title: [Book]
+    @Query(sort: [SortDescriptor(\Book.author)]) var author: [Book]
     
+    @State private var filter = false
     @State private var showingAddScreen = false
+    
+    var books: [Book] { filter ? author : title }
     
     var body: some View {
         NavigationStack {
@@ -46,6 +50,12 @@ struct ContentView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add", systemImage: "plus") {
                         showingAddScreen.toggle()
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Filter", systemImage: "line.3.horizontal.decrease") {
+                        filter.toggle()
                     }
                 }
             }
