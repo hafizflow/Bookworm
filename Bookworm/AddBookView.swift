@@ -1,10 +1,3 @@
-//
-//  AddBookView.swift
-//  Bookworm
-//
-//  Created by Hafizur Rahman on 26/12/25.
-//
-
 import SwiftData
 import SwiftUI
 
@@ -17,8 +10,16 @@ struct AddBookView: View {
     @State private var genre: String = "Fantasy"
     @State private var review: String = ""
     @State private var rating: Int = 3
+    @State private var date: Date = .now
     
     let genres = ["Fantasy", "Horror", "Kids", "Mystery", "Poetry", "Romance", "Thriller"]
+    
+    var isNonValid: Bool {
+        if title.isEmpty || author.isEmpty || review.isEmpty {
+            return true
+        }
+        return false
+    }
     
     var body: some View {
         NavigationStack {
@@ -40,17 +41,16 @@ struct AddBookView: View {
                 
                 Section {
                     Button("Save") {
-                        let book = Book(title: title, author: author, genre: genre, review: review, rating: rating)
+                        let book = Book(title: title, author: author, genre: genre, review: review, rating: rating, date: date)
                         modelContext.insert(book)
                         dismiss()
                     }
                 }
+                .disabled(isNonValid)
             }
             .navigationTitle("Add Book")
             .toolbar {
-                Button("Cancel", systemImage: "multiply", role: .close) {
-                    dismiss()
-                }
+                Button("Cancel", systemImage: "multiply", action: { dismiss() })
             }
         }
     }

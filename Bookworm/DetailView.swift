@@ -1,10 +1,3 @@
-    //
-    //  DetailView.swift
-    //  Bookworm
-    //
-    //  Created by Hafizur Rahman on 27/12/25.
-    //
-
 import SwiftData
 import SwiftUI
 
@@ -42,6 +35,10 @@ struct DetailView: View {
             
             RatingView(rating: .constant(book.rating))
                 .font(.largeTitle)
+            
+            Text("Date: \(book.date.formatted(date: .long, time: .shortened))")
+                .font(.caption)
+                .padding()
         }
         .navigationTitle(book.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -70,7 +67,7 @@ struct DetailView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Book.self, configurations: config)
-        let example = Book(title: "Test Book", author: "Test Author", genre: "Fantasy", review: "This was a great book; I really enjoyed it.", rating: 4)
+        let example = Book(title: "Test Book", author: "Test Author", genre: "Fantasy", review: "This was a great book; I really enjoyed it.", rating: 4, date: Date.now)
         
         return DetailView(book: example)
             .modelContainer(container)
