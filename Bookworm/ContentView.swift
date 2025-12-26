@@ -1,48 +1,52 @@
-//
-//  ContentView.swift
-//  Bookworm
-//
-//  Created by Hafizur Rahman on 26/12/25.
-//
+    //
+    //  ContentView.swift
+    //  Bookworm
+    //
+    //  Created by Hafizur Rahman on 26/12/25.
+    //
 
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @Query var students: [Student]
+    @Query var books: [Book]
+    
+    @State private var showingAddScreen = false
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(students) { student in
-                    Text(student.name)
+                ForEach(books) { book in
+                    NavigationLink(value: book) {
+                        HStack {
+                            EmojiRatingView(rating: book.rating)
+                                .font(.largeTitle)
+                            
+                            VStack(alignment: .leading) {
+                                Text(book.title)
+                                    .font(.headline)
+                                Text(book.author)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
                 }
-                .onDelete(perform: delete)
             }
-            .navigationTitle("Students")
+            .navigationTitle("Bookwarm")
             .toolbar {
-                Button("Add Student") {
-                    let firstName = ["Hafiz", "Nishat", "Anjum"]
-                    let lastName = ["5678", "5586", "5801"]
-                    
-                    let name = "\(firstName.randomElement()!) \(lastName.randomElement()!)"
-                    let student = Student(id: UUID(), name: name)
-                    
-                    modelContext.insert(student)
+                Button("Add", systemImage: "plus") {
+                    showingAddScreen.toggle()
                 }
             }
-        }
-    }
-    
-    func delete(for offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(students[index])
+            .sheet(isPresented: $showingAddScreen) {
+                AddBookView()
+            }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Student.self)
+        .modelContainer(for: Book.self)
 }
